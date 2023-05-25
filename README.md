@@ -39,8 +39,6 @@ ID.
 More detailed information about the status can be viewed by clicking on the
 icon, and in the drop-down window, follow the link `Details`.
 
-![Deployment status](./assets/deploy-status.png)
-
 ### Routing
 
 If your application uses the `react-router-dom` library for routing, you must
