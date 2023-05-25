@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Delivery-app/static/css/main.7acaea2f.css",
+    "main.js": "/Delivery-app/static/js/main.07d3183d.js",
+    "index.html": "/Delivery-app/index.html",
+    "main.7acaea2f.css.map": "/Delivery-app/static/css/main.7acaea2f.css.map",
+    "main.07d3183d.js.map": "/Delivery-app/static/js/main.07d3183d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7acaea2f.css",
+    "static/js/main.07d3183d.js"
+  ]
+}
