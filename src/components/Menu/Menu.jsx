@@ -17,8 +17,6 @@ export const Menu = () => {
     const selectedMenuItem = MenuList.find(item => item.id === selectedButton);
     if (selectedMenuItem) {
       return selectedMenuItem.food.map((foodItem, index) => {
-        const cartItem = menuItems.find(item => item.id === foodItem.id);
-
         return (
           <div className="food__item" key={index}>
             <div className="food__photo">

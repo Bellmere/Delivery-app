@@ -127,7 +127,7 @@
 .order-submit--wrap {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
 }
 .order-submit--wrap span {
   margin-right: 20px;
@@ -149,7 +149,7 @@
     border: 1px solid #222;
   }
   .order__quantity {
-    justify-content: end;
+    justify-content: flex-end;
     margin-top: 25px;
   }
 }
