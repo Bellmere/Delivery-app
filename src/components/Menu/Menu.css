@@ -71,7 +71,7 @@
 }
 .food__add--wrap {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 .food__add {
   margin: 0;
