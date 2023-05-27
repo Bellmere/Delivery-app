@@ -32,7 +32,7 @@ export const AppBar = () => {
 
   return (
     <header className="header">
-      <Container>
+      <div className="container-nav">
         <div className="nav--wrapper">
           <Logo />
           <div className="navigation">
@@ -53,7 +53,7 @@ export const AppBar = () => {
             </button>
           </div>
         </div>
-      </Container>
+      </div>
       {showMobileMenu && (
         <div className="mobile__menu" ref={mobileMenuRef}>
           <Container>

@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useMenuState } from 'components/Menu/MenuState';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import BaseInput from 'components/Fields/BaseInput';
+import { Container } from 'components/styled/Container';
+import { MainButton } from 'components/Buttons/Main/MainButton';
+import { validationForm } from 'helpers';
+import {
+  increaseQuantity,
+  decreaseQuantity,
+  remove,
+} from 'redux/MenuSlice/MenuSlice';
+
+import './CLientForm.css';
 
 export const ClientForm = () => {
-  const menuState = useMenuState();
+  const cartItems = useSelector(state => state.food.items);
+  const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
-    input1: '',
-    input2: '',
-    input3: '',
-    input4: '',
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
   });
-
-  useEffect(() => {
-    // Load inputs from local storage on component mount
-    const storedInputs = JSON.parse(localStorage.getItem('formInputs'));
-    if (storedInputs) {
-      setInputs(storedInputs);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save inputs to local storage whenever it changes
-    localStorage.setItem('formInputs', JSON.stringify(inputs));
-  }, [inputs]);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -30,67 +30,135 @@ export const ClientForm = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log('Form submitted:', inputs, menuState.cartItems);
+    const dataFormInputs = Object.fromEntries(
+      Array.from(new FormData(e.target))
+    );
+
+    const dataForm = { ...dataFormInputs, basketItems: cartItems };
+    console.log(dataForm);
+    const errors = validationForm(dataForm);
+    if (Object.keys(errors).length > 0) {
+      const errorMessages = Object.values(errors).join('\n');
+      return toast.error(errorMessages);
+    }
+    console.log('Form submitted:', inputs, cartItems, totalPrice);
+    return toast.success(
+      'The form has been submitted, and our manager will call you in about 5 minutes.'
+    );
   };
 
-  const totalPrice = menuState.cartItems.reduce(
-    (total, item) => total + item.price,
-    0
-  );
+  const totalPrice = cartItems.reduce((total, item) => {
+    const itemPrice = item.price * item.quantity;
+    return total + itemPrice;
+  }, 0);
+
+  const handleIncreaseQuantity = itemId => {
+    dispatch(increaseQuantity({ id: itemId }));
+  };
+
+  const handleDecreaseQuantity = itemId => {
+    dispatch(decreaseQuantity({ id: itemId }));
+  };
+
+  const handleDeleteItem = itemId => {
+    dispatch(remove({ id: itemId }));
+  };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="row">
-          <input
-            type="text"
-            name="input1"
-            value={inputs.input1}
-            onChange={handleInputChange}
-            placeholder="Input 1"
-          />
-          <input
-            type="text"
-            name="input2"
-            value={inputs.input2}
-            onChange={handleInputChange}
-            placeholder="Input 2"
-          />
-          <input
-            type="text"
-            name="input3"
-            value={inputs.input3}
-            onChange={handleInputChange}
-            placeholder="Input 3"
-          />
-          <input
-            type="text"
-            name="input4"
-            value={inputs.input4}
-            onChange={handleInputChange}
-            placeholder="Input 4"
-          />
-        </div>
-        <div className="row">
-          <h3>Cart Items:</h3>
-          <ul>
-            {menuState.cartItems.map((item, index) => (
-              <li key={index}>{item.name}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="row">
-          <input
-            type="text"
-            name="totalPrice"
-            value={`Total Price: $${totalPrice}`}
-            disabled
-          />
-        </div>
-        <div className="row">
-          <button type="submit">Submit</button>
-        </div>
-      </form>
-    </div>
+    <section className="order__section">
+      <Container>
+        <form className="order-from" onSubmit={handleSubmit}>
+          <div className="order-form--wrapper">
+            <div className="credentials--wrap">
+              <div className="credentials__item">
+                <BaseInput
+                  name="name"
+                  type="text"
+                  label="Name:"
+                  placeholder="Name:"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="credentials__item">
+                <BaseInput
+                  name="email"
+                  type="email"
+                  label="Email:"
+                  placeholder="Email:"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="credentials__item">
+                <BaseInput
+                  name="phone"
+                  type="tel"
+                  label="Phone:"
+                  placeholder="Phone:"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="credentials__item">
+                <BaseInput
+                  name="address"
+                  type="text"
+                  label="Address:"
+                  placeholder="Address:"
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="order-items">
+              <ul className="order__list">
+                {cartItems.map((item, index) => {
+                  const itemPrice = item.price * item.quantity;
+
+                  return (
+                    <li className="order__item" key={index}>
+                      <div className="order__photo--wrap">
+                        <img src={item.src} alt={item.name} />
+                      </div>
+                      <div className="order__box">
+                        <h3>{item.name}</h3>
+                        <p>Price: ${itemPrice}</p>
+                        <button
+                          className="order__quantity__btn order__delete__btn"
+                          type="button"
+                          onClick={() => handleDeleteItem(item.id)}
+                        >
+                          Delete
+                        </button>
+                        <div className="order__quantity">
+                          <input type="number" value={item.quantity} readOnly />
+                          <div className="order__quantity__options">
+                            <button
+                              className="order__quantity__btn order__quantity__btn--up"
+                              type="button"
+                              onClick={() => handleIncreaseQuantity(item.id)}
+                            >
+                              +
+                            </button>
+                            <button
+                              className="order__quantity__btn order__quantity__btn--down"
+                              type="button"
+                              onClick={() => handleDecreaseQuantity(item.id)}
+                            >
+                              -
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+          <div className="order-submit--wrap">
+            <span>Total price: ${totalPrice}</span>
+            <MainButton>Submit</MainButton>
+          </div>
+        </form>
+      </Container>
+    </section>
   );
 };
