@@ -77,3 +77,21 @@
   margin: 0;
   border-radius: 20px;
 }
+
+/* Responsive */
+@media (max-width: 767px) {
+  .menu {
+    margin: 40px auto;
+  }
+  .menu--wrapper {
+    grid-template-columns: 100%;
+    gap: 24px;
+  }
+}
+@media (max-width: 479px) {
+  .menu__content {
+    display: grid;
+    grid-template-columns: 100%;
+    gap: 20px;
+  }
+}

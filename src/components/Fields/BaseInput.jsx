@@ -3,6 +3,8 @@ export default function BaseInput({
   label = '',
   type = 'text',
   placeholder = '',
+  value,
+  onChange,
 }) {
   return (
     <>
@@ -13,6 +15,8 @@ export default function BaseInput({
           type={type}
           name={name}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
         />
       </label>
     </>

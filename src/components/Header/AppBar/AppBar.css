@@ -7,6 +7,12 @@
     0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
   z-index: 1000;
 }
+.container-nav {
+  max-width: 1170px;
+  width: 100%;
+  padding: 0 15px;
+  margin: 0 auto;
+}
 .nav--wrapper {
   display: flex;
   justify-content: space-between;
