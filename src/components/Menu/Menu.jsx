@@ -55,7 +55,8 @@ export const Menu = () => {
     const existingItem = menuItems.find(item => item.name === foodItem.name);
 
     if (existingItem) {
-      dispatch(increaseQuantity(existingItem.id));
+      dispatch(increaseQuantity({ id: existingItem.id }));
+      toast.success('The item quantity has been increased.');
     } else {
       const newItem = {
         ...foodItem,
@@ -67,6 +68,7 @@ export const Menu = () => {
       toast.success('The item has been added successfully.');
     }
   };
+
 
   const handleButtonClick = buttonId => {
     setSelectedButton(buttonId);
