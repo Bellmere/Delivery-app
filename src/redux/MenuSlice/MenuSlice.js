@@ -1,9 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { fetchMenu } from './operations';
 
 export const MenuSlice = createSlice({
-  name: 'food',
+  name: 'menu',
   initialState: {
+    menuList: [],
     items: [],
+    status: 'idle',
+    error: null,
   },
   reducers: {
     add(state, action) {
@@ -28,7 +32,23 @@ export const MenuSlice = createSlice({
       state.items = state.items.filter(item => item.id !== id);
     },
   },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchMenu.pending, state => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchMenu.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.menuList = action.payload;
+      })
+      .addCase(fetchMenu.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      });
+  },
 });
 
-export const { add, increaseQuantity, decreaseQuantity, remove } =
-  MenuSlice.actions;
+export const { add, increaseQuantity, decreaseQuantity, remove } = MenuSlice.actions;
+
+export default MenuSlice.reducer;
