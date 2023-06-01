@@ -15,36 +15,47 @@ import './CLientForm.css';
 
 export const ClientForm = () => {
   const cartItems = useSelector(state => state.menu.items);
+  console.log(cartItems);
   const dispatch = useDispatch();
-  const [inputs, setInputs] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-  });
 
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setInputs(prevInputs => ({ ...prevInputs, [name]: value }));
-  };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const dataFormInputs = Object.fromEntries(
-      Array.from(new FormData(e.target))
-    );
 
-    const dataForm = { ...dataFormInputs, basketItems: cartItems };
+    const dataFormInputs = Object.fromEntries(Array.from(new FormData(e.target)));
+    const basketItems = cartItems.map(({ id, ...rest }) => rest);
+    const dataForm = { ...dataFormInputs, basketItems };
+
     const errors = validationForm(dataForm);
     if (Object.keys(errors).length > 0) {
       const errorMessages = Object.values(errors).join('\n');
       return toast.error(errorMessages);
     }
-    console.log('Form submitted:', inputs, cartItems, totalPrice);
-    return toast.success(
-      'The form has been submitted, and our manager will call you in about 5 minutes.'
-    );
+
+    const orderForm = { ...dataForm, total: totalPrice };
+    console.log(orderForm);
+
+    try {
+      const response = await fetch('https://delivery-project.herokuapp.com/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderForm),
+      });
+
+      if (response.ok) {
+        toast.success('The form has been submitted.');
+      } else {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      toast.error('An error occurred while submitting the form.');
+      console.error(error);
+    }
   };
+
 
   const totalPrice = cartItems.reduce((total, item) => {
     const itemPrice = item.price * item.quantity;
@@ -75,7 +86,6 @@ export const ClientForm = () => {
                   type="text"
                   label="Name:"
                   placeholder="Name:"
-                  onChange={handleInputChange}
                 />
               </div>
               <div className="credentials__item">
@@ -84,7 +94,6 @@ export const ClientForm = () => {
                   type="email"
                   label="Email:"
                   placeholder="Email:"
-                  onChange={handleInputChange}
                 />
               </div>
               <div className="credentials__item">
@@ -93,7 +102,6 @@ export const ClientForm = () => {
                   type="tel"
                   label="Phone:"
                   placeholder="Phone:"
-                  onChange={handleInputChange}
                 />
               </div>
               <div className="credentials__item">
@@ -102,7 +110,6 @@ export const ClientForm = () => {
                   type="text"
                   label="Address:"
                   placeholder="Address:"
-                  onChange={handleInputChange}
                 />
               </div>
             </div>
