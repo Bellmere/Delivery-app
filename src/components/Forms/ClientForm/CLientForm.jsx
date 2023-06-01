@@ -14,7 +14,7 @@ import {
 import './CLientForm.css';
 
 export const ClientForm = () => {
-  const cartItems = useSelector(state => state.food.items);
+  const cartItems = useSelector(state => state.menu.items);
   const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
     name: '',
@@ -35,7 +35,6 @@ export const ClientForm = () => {
     );
 
     const dataForm = { ...dataFormInputs, basketItems: cartItems };
-    console.log(dataForm);
     const errors = validationForm(dataForm);
     if (Object.keys(errors).length > 0) {
       const errorMessages = Object.values(errors).join('\n');

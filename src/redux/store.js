@@ -13,16 +13,17 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
-  key: 'food',
+  key: 'menu',
   storage,
-  whitelist: ['items'],
+  whitelist: ['items', 'menuList'],
 };
+
 
 const persistedReducer = persistReducer(persistConfig, MenuSlice.reducer);
 
 export const store = configureStore({
   reducer: {
-    food: persistedReducer,
+    menu: persistedReducer, // Change the reducer key to 'menu'
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
@@ -34,3 +35,4 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
